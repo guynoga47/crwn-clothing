@@ -23,7 +23,7 @@ class App extends React.Component {
       if (userAuth) {
         const userRef = await createUserProfileDocument(userAuth);
         userRef.onSnapshot((snapShot) => {
-          console.log(`snapShot:,`, snapShot.data());
+          console.log(`snapShot.data() on App.js:,`, snapShot.data());
           this.setState(
             {
               currentUser: {
@@ -44,10 +44,14 @@ class App extends React.Component {
 
   componentWillUnmount() {
     this.unsubscribeFromAuth();
-    console.log(this.state.currentUser);
+    console.log(
+      "state when unmounting, after this.unsubscribeFromAuth(): ",
+      this.state.currentUser
+    );
   }
 
   render() {
+    console.log("rendering App component");
     return (
       <div>
         <Header currentUser={this.state.currentUser} />
