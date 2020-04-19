@@ -1,43 +1,35 @@
 import React from "react";
 import "./App.css";
 import { Switch, Route } from "react-router-dom";
-
+import { connect } from "react-redux";
 import Homepage from "./pages/homepage/homepage.component";
 import ShopPage from "./pages/shop/shop.component";
 import Header from "./components/header/header.component";
 import SignInAndSignUpPage from "../src/pages/sign-in-and-sign-up/sign-in-and-sign-up.component";
 import { auth, createUserProfileDocument } from "./firebase/firebase.utils";
-import { render } from "@testing-library/react";
+import { setCurrentUser } from "./redux/user/user.actions";
 
 class App extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      currentUser: null,
-    };
-  }
   unsubscribeFromAuth = null;
 
   componentDidMount() {
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
       if (userAuth) {
         const userRef = await createUserProfileDocument(userAuth);
+
         userRef.onSnapshot((snapShot) => {
           console.log(`snapShot.data() on App.js:,`, snapShot.data());
-          this.setState(
-            {
-              currentUser: {
-                id: snapShot.id,
-                ...snapShot.data(),
-              },
-            },
-            () => {
-              console.log("componentDidMount state is: ", this.state);
-            }
-          );
+          this.props.onSetCurrentUser({
+            id: snapShot.id,
+            ...snapShot.data(),
+          });
         });
       } else {
-        this.setState({ currentUser: null });
+        //added else, and corrected an error in the videos.
+        //otherwise setCurrentUser is fired twice, once with payload null (this section), and then after async task is completed and we actually have
+        //a payload (onSnapShot);
+        //the setCurrentUser action should onnly happen once.
+        this.props.onSetCurrentUser(null);
       }
     });
   }
@@ -54,7 +46,7 @@ class App extends React.Component {
     console.log("rendering App component");
     return (
       <div>
-        <Header currentUser={this.state.currentUser} />
+        <Header />
         <Switch>
           <Route exact path="/" component={Homepage} />
           <Route exact path="/shop" component={ShopPage} />
@@ -65,4 +57,8 @@ class App extends React.Component {
   }
 }
 
-export default App;
+const mapDispatchToProps = (dispatch) => ({
+  onSetCurrentUser: (user) => dispatch(setCurrentUser(user)),
+});
+
+export default connect(null, mapDispatchToProps)(App);
