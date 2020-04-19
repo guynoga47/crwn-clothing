@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import Homepage from "./pages/homepage/homepage.component";
 import ShopPage from "./pages/shop/shop.component";
@@ -38,10 +38,10 @@ class App extends React.Component {
     this.unsubscribeFromAuth();
     console.log(
       "state when unmounting, after this.unsubscribeFromAuth(): ",
-      this.state.currentUser
+      this.props.currentUser
     );
   }
-
+  //prettier-ignore
   render() {
     console.log("rendering App component");
     return (
@@ -50,15 +50,19 @@ class App extends React.Component {
         <Switch>
           <Route exact path="/" component={Homepage} />
           <Route exact path="/shop" component={ShopPage} />
-          <Route exact path="/signin" component={SignInAndSignUpPage} />
+          <Route exact path="/signin" render={()=> this.props.currentUser ? <Redirect to="/" /> : <SignInAndSignUpPage />} />
         </Switch>
       </div>
     );
   }
 }
 
+const mapStateToPros = (state) => ({
+  currentUser: state.user.currentUser,
+});
+
 const mapDispatchToProps = (dispatch) => ({
   onSetCurrentUser: (user) => dispatch(setCurrentUser(user)),
 });
 
-export default connect(null, mapDispatchToProps)(App);
+export default connect(mapStateToPros, mapDispatchToProps)(App);
