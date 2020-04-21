@@ -3,9 +3,13 @@ import { Link } from "react-router-dom";
 import { ReactComponent as Logo } from "../../assets/crown.svg";
 import { auth } from "../../firebase/firebase.utils";
 import { connect } from "react-redux";
+import { createStructuredSelector } from "reselect";
+
 import CartIcon from "../cart-icon/cart-icon.component";
 import "./header.styles.scss";
 import CartDropdown from "../cart-dropdown/cart-dropdown.component";
+import { selectCartHidden } from "../../redux/cart/cart.selectors";
+import { selectCurrentUser } from "../../redux/user/user.selector";
 
 const Header = (props) => (
   <div className="header">
@@ -36,8 +40,8 @@ const Header = (props) => (
 );
 
 const mapStateToPros = (state) => ({
-  currentUser: state.user.currentUser,
-  hidden: state.cart.hidden,
+  currentUser: selectCurrentUser(state),
+  hidden: selectCartHidden(state),
 });
 
 //another way of doing it:
