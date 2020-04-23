@@ -50,14 +50,23 @@ class App extends React.Component {
         <Header />
         <Switch>
           <Route exact path="/" component={Homepage} />
-          <Route exact path="/shop" component={ShopPage} />
-          <Route exact path="/signin" render={()=> this.props.currentUser ? <Redirect to="/" /> : <SignInAndSignUpPage />} />
-          <Route exact path="/checkout" component={CheckoutPage}/>
+          <Route path="/shop" component={ShopPage} />
+          <Route path="/signin" render={()=> this.props.currentUser ? <Redirect to="/" /> : <SignInAndSignUpPage />} />
+          <Route path="/checkout" component={CheckoutPage}/>
         </Switch>
       </div>
     );
   }
 }
+
+/*
+Removed "exact" from <Route/> to shop, since it caused trouble
+when trying to implement nested routing within the shop page.
+basically, when exact path is on, if we try to go to localhost:3000/shop
+then we get the exact path to true, but in any other case like localhost:3000/shop/hats
+we are not getting exact to true here so we are not rendering the ShopPage with the routes defined
+in it at all!
+*/
 
 const mapStateToPros = (state) => ({
   currentUser: selectCurrentUser(state),

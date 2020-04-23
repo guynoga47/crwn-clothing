@@ -7,7 +7,6 @@ import CustomButton from "../custom-button/custom-button.component";
 //prettier-ignore
 const CollectionItem = ({item, onAddItem}) => (
   <div className="collection-item">
-    {console.log(item, item.imageUrl, item.price)}
     <div className="image" style={{ backgroundImage: `url(${item.imageUrl})` }} />
     <div className="collection-footer">
       <span className="name">{item.name}</span>

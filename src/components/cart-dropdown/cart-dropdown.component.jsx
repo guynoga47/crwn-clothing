@@ -39,6 +39,13 @@ const mapDispatchToProps = (dispatch) => ({
   onCheckoutButtonClick: () => dispatch(toggleCartHidden()),
 });
 /*
+Another way of doing it: not using mapDispatchToProps, we
+we still get access to the dispatch function through props,
+and we can fire toggleCartHidden directly. this is case of needing only one
+action in our component, and saving the writeup of a function for it.
+we choose to use mapDispatchToProps for consistency.
+*/
+/*
 refactored the code below to use a available selector instead.
 
 const mapStateToPros = (state) => ({

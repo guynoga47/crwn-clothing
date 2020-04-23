@@ -44,6 +44,16 @@ const mapStateToPros = (state) => ({
   hidden: selectCartHidden(state),
 });
 
+/*
+another way of doing it (less readable):
+
+const mapStateToPros = createStructuredSelector({
+  currentUser: selectCurrentUser,
+  hidden: selectCartHidden
+});
+
+*/
+
 //another way of doing it:
 
 // const mapStateToPros = ({user: {currentUser}, cart: {hidden}}) => ({
