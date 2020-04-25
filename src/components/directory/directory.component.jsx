@@ -5,7 +5,6 @@ import { connect } from "react-redux";
 import { selectDirectorySections } from "../../redux/directory/directory.selectors";
 
 const Directory = (props) => {
-  console.log(props.sections);
   return (
     <div className="directory-menu">
       {props.sections.map(({ id, ...otherSectionProps }) => (

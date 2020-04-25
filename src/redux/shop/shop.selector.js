@@ -8,16 +8,16 @@ export const selectCollections = createSelector(
 );
 
 export const selectCollection = (collectionUrlParam) =>
-  createSelector(
-    [selectCollections],
-    (collections) => collections[collectionUrlParam]
+  createSelector([selectCollections], (collections) =>
+    collections ? collections[collectionUrlParam] : null
   );
 
 //here we return the collections data as an array so we wont break the code in collectionOverview that applies array functions to
 //display the items correctly
 export const selectCollectionsForOverview = createSelector(
   [selectCollections],
-  (collections) => Object.keys(collections).map((key) => collections[key])
+  (collections) =>
+    collections ? Object.keys(collections).map((key) => collections[key]) : []
 );
 /*
 

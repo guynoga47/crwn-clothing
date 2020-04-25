@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { ReactComponent as Logo } from "../../assets/crown.svg";
 import { auth } from "../../firebase/firebase.utils";
 import { connect } from "react-redux";
-import { createStructuredSelector } from "reselect";
 
 import CartIcon from "../cart-icon/cart-icon.component";
 import "./header.styles.scss";
@@ -23,7 +22,6 @@ const Header = (props) => (
       <Link className="option" to="/contact">
         CONTACT
       </Link>
-      {console.log(`rendering signin, current user: ${props.currentUser}`)}
       {props.currentUser ? (
         <div className="option" onClick={() => auth.signOut()}>
           SIGN OUT

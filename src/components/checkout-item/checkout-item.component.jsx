@@ -6,7 +6,6 @@ import {
   addItem,
 } from "../../redux/cart/cart.action";
 import "./checkout-item.styles.scss";
-import { selectCartItems } from "../../redux/cart/cart.selectors";
 
 const CheckoutItem = (props) => (
   <div className="checkout-item">

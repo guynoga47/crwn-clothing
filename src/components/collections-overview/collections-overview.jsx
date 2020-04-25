@@ -5,13 +5,16 @@ import { selectCollectionsForOverview } from "../../redux/shop/shop.selector";
 
 import "./collections-overview.styles.scss";
 
-const CollectionsOverview = (props) => (
-  <div className="collections-overview">
-    {props.collections.map(({ id, ...otherCollectionProps }) => (
-      <CollectionPreview key={id} {...otherCollectionProps} />
-    ))}
-  </div>
-);
+const CollectionsOverview = (props) => {
+  console.log("collectionsOverview: ", props.collections);
+  return (
+    <div className="collections-overview">
+      {props.collections.map(({ id, ...otherCollectionProps }) => (
+        <CollectionPreview key={id} {...otherCollectionProps} />
+      ))}
+    </div>
+  );
+};
 
 const mapStateToProps = (state) => ({
   collections: selectCollectionsForOverview(state),
