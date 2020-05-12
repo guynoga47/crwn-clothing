@@ -32,3 +32,14 @@ export const selectCollection = (collectionUrlParam) =>
     )
   );
 */
+
+export const selectIsFetchingCollections = createSelector(
+  [selectShop],
+  (shop) => shop.isFetching
+);
+
+export const selectIsCollectionsLoaded = createSelector(
+  [selectShop],
+  (shop) => !!shop.collections
+  //equivalent to shop.collections ? true : false (double bangs, returns the object truth value)
+);

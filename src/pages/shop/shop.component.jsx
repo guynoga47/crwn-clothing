@@ -1,16 +1,9 @@
 import React from "react";
 import { Route } from "react-router-dom";
 import { connect } from "react-redux";
-import CollectionsOverview from "../../components/collections-overview/collections-overview";
-import CollectionPage from "../collection/collection.component";
-
-import WithSpinner from "../../components/with-spinner/with-spinner.component";
-
-import {
-  firestore,
-  convertCollectionsSnapshotToMap,
-} from "../../firebase/firebase.utils";
-import { updateCollections } from "../../redux/shop/shop.actions";
+import CollectionPageContainer from "../collection/collection-container";
+import CollectionOverviewContainer from "../../components/collections-overview/collection-overview.container";
+import { fetchCollectionsStart } from "../../redux/shop/shop.actions";
 
 /* The component getting access to "match" property via
 its parent which is "Routing" to it, aka, rendering it,
@@ -29,58 +22,22 @@ because we needed that extra functionality to know how to deal with rendering so
 the async shop data fetching from firestore.
 */
 
-const CollectionsOverviewWithSpinner = WithSpinner(CollectionsOverview);
-const CollectionPageWithSpinner = WithSpinner(CollectionPage);
-
 class ShopPage extends React.Component {
-  state = {
-    loading: true,
-  };
-
   unsubscribeFromSnapshot = null;
   componentDidMount() {
-    const collectionRef = firestore.collection("collections");
-    /*   onSnapShot:
-     whenever this collection gets updated, or this code runs for first time,
-     this onSnapShot will send us the code of our collections objects array 
-     at the time when this code renders. 
-     
-     We implemented it in the Observable pattern, but could also use simple
-     promises pattern by doing:
-     collectionRef.get().then(snapshot => {....})
-     
-     Update: moved to get() in order to stick with the videos.
-     */
-
-    collectionRef.get().then((snapshot) => {
-      const collectionMap = convertCollectionsSnapshotToMap(snapshot);
-      console.log("collectionMap before dispatch", collectionMap);
-      this.props.onUpdateCollections(collectionMap);
-      this.setState({ loading: false });
-    });
+    this.props.onFetchCollectionsStart();
   }
-
   render() {
     return (
       <div className="shop-page">
         <Route
           exact
           path={`${this.props.match.path}`}
-          render={(props) => (
-            <CollectionsOverviewWithSpinner
-              isLoading={this.state.loading}
-              {...props}
-            />
-          )}
+          component={CollectionOverviewContainer}
         />
         <Route
           path={`${this.props.match.path}/:collectionId`}
-          render={(props) => (
-            <CollectionPageWithSpinner
-              isLoading={this.state.loading}
-              {...props}
-            />
-          )}
+          component={CollectionPageContainer}
         />
       </div>
     );
@@ -99,8 +56,23 @@ pages.
  */
 
 const mapDispatchToProps = (dispatch) => ({
-  onUpdateCollections: (collectionsMap) =>
-    dispatch(updateCollections(collectionsMap)),
+  onFetchCollectionsStart: () => dispatch(fetchCollectionsStart()),
 });
 
 export default connect(null, mapDispatchToProps)(ShopPage);
+
+/*
+Explanation of why do we need IsCollectionLoaded selector only in CollectionPageWithSpinner
+Component:
+
+Our rendering on CollectionPageWithSpinner is based on a specific collection we select from collections,
+and we are assuming that once we are trying to get a specific collection, then the collections were already
+fetched and exists. When we first try to render shop/jackets for example (a CollectionPage) we are rendering
+the component with the isLoading is set to false (because was based on isFetching state prop, and isFetching
+initial prop is false, and we render is before componentDidMount and obviously before fetch finished and isFetching
+was set to true) hence we are trying to access (using selector) a key of collections, when collections wan't fetched
+yet. So we don't render a spinner and we try to render the original component with no data to relate to.
+
+In contrast to CollectionsOverviewWithSpinner, which is too gets render with isLoading=false, because we didn't modify
+it's selector 
+*/

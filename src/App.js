@@ -7,39 +7,36 @@ import ShopPage from "./pages/shop/shop.component";
 import SignInAndSignUpPage from "../src/pages/sign-in-and-sign-up/sign-in-and-sign-up.component";
 import CheckoutPage from "../src/pages/checkout/checkout.component";
 import Header from "./components/header/header.component";
-import {
-  auth,
-  createUserProfileDocument,
-  addCollectionAndDocuments,
-} from "./firebase/firebase.utils";
-import { setCurrentUser } from "./redux/user/user.actions";
-import { selectCurrentUser } from "./redux/user/user.selector";
+import { selectCurrentUser } from "./redux/user/user.selectors";
 import { selectCollectionsForOverview } from "./redux/shop/shop.selector";
-
+import { checkUserSession } from "./redux/user/user.actions";
+//unfold comments: CTRL K+/
 class App extends React.Component {
   unsubscribeFromAuth = null;
 
   componentDidMount() {
+    this.props.onCheckUserSession();
+  }
+  /*
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
       if (userAuth) {
         const userRef = await createUserProfileDocument(userAuth);
-
         userRef.onSnapshot((snapShot) => {
-          this.props.onSetCurrentUser({
+          this.props.on({
             id: snapShot.id,
             ...snapShot.data(),
           });
         });
       } else {
-        //added else, and corrected an error in the videos.
-        //otherwise setCurrentUser is fired twice, once with payload null (this section), and then after async task is completed and we actually have
-        //a payload (onSnapShot);
-        //the setCurrentUser action should only happen once.
+        added else, and corrected an error in the videos.
+        otherwise setCurrentUser is fired twice, once with payload null (this section), and then after async task is completed and we actually have
+        a payload (onSnapShot);
+        the setCurrentUser action should only happen once.
         this.props.onSetCurrentUser(null);
-      }
-      /*
+      } 
+      */
+  /*
       --WE ONLY USED TO CODE BELOW TO INSERT OUR ITEMS TO THE FIRESTORE ONCE--
-
       addCollectionAndDocuments(
         "collections",
         this.props.collectionsArray.map((collection) => ({
@@ -47,12 +44,9 @@ class App extends React.Component {
           items: collection.items,
         }))
       );
-      //we send addCollectionAndDocuments an array comprising only the keys we need from the original collections array.
-      //we only want to store the title and items in firebase.
+      we send addCollectionAndDocuments an array comprising only the keys we need from the original collections array.
+      we only want to store the title and items in firebase.
       */
-    });
-  }
-
   componentWillUnmount() {
     this.unsubscribeFromAuth();
     console.log(
@@ -91,7 +85,7 @@ const mapStateToPros = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  onSetCurrentUser: (user) => dispatch(setCurrentUser(user)),
+  onCheckUserSession: () => dispatch(checkUserSession()),
 });
 
 export default connect(mapStateToPros, mapDispatchToProps)(App);

@@ -5,7 +5,7 @@ import { selectCollection } from "../../redux/shop/shop.selector";
 import CollectionItem from "../../components/collection-item/collection-item.component";
 
 const CollectionPage = (props) => {
-  console.log(`Collection page:`, props.collection);
+  console.log("Collection page props: ", props);
   return (
     <div className="collection-page">
       <h2 className="title">{props.collection.title}</h2>
