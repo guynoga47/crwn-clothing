@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Route } from "react-router-dom";
 import { connect } from "react-redux";
 import CollectionPageContainer from "../collection/collection-container";
@@ -22,27 +22,25 @@ because we needed that extra functionality to know how to deal with rendering so
 the async shop data fetching from firestore.
 */
 
-class ShopPage extends React.Component {
-  unsubscribeFromSnapshot = null;
-  componentDidMount() {
-    this.props.onFetchCollectionsStart();
-  }
-  render() {
-    return (
-      <div className="shop-page">
-        <Route
-          exact
-          path={`${this.props.match.path}`}
-          component={CollectionOverviewContainer}
-        />
-        <Route
-          path={`${this.props.match.path}/:collectionId`}
-          component={CollectionPageContainer}
-        />
-      </div>
-    );
-  }
-}
+const ShopPage = ({ onFetchCollectionsStart, match }) => {
+  useEffect(() => {
+    onFetchCollectionsStart();
+  }, [onFetchCollectionsStart]);
+
+  return (
+    <div className="shop-page">
+      <Route
+        exact
+        path={`${match.path}`}
+        component={CollectionOverviewContainer}
+      />
+      <Route
+        path={`${match.path}/:collectionId`}
+        component={CollectionPageContainer}
+      />
+    </div>
+  );
+};
 /* 
 <Route path={`${props.match}/:categoryId`}/>
 We want that the shop page will be able to route to

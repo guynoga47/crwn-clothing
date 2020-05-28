@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.css";
 import { Switch, Route, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
@@ -11,12 +11,11 @@ import { selectCurrentUser } from "./redux/user/user.selectors";
 import { selectCollectionsForOverview } from "./redux/shop/shop.selector";
 import { checkUserSession } from "./redux/user/user.actions";
 //unfold comments: CTRL K+/
-class App extends React.Component {
-  unsubscribeFromAuth = null;
+const App = ({ onCheckUserSession, currentUser }) => {
+  useEffect(() => {
+    onCheckUserSession();
+  }, [onCheckUserSession]);
 
-  componentDidMount() {
-    this.props.onCheckUserSession();
-  }
   /*
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
       if (userAuth) {
@@ -47,28 +46,19 @@ class App extends React.Component {
       we send addCollectionAndDocuments an array comprising only the keys we need from the original collections array.
       we only want to store the title and items in firebase.
       */
-  componentWillUnmount() {
-    this.unsubscribeFromAuth();
-    console.log(
-      "state when unmounting, after this.unsubscribeFromAuth(): ",
-      this.props.currentUser
-    );
-  }
   //prettier-ignore
-  render() {
-    return (
+  return (
       <div>
         <Header />
         <Switch>
           <Route exact path="/" component={Homepage} />
           <Route path="/shop" component={ShopPage} />
-          <Route path="/signin" render={()=> this.props.currentUser ? <Redirect to="/" /> : <SignInAndSignUpPage />} />
+          <Route path="/signin" render={()=> currentUser ? <Redirect to="/" /> : <SignInAndSignUpPage />} />
           <Route path="/checkout" component={CheckoutPage}/>
         </Switch>
       </div>
     );
-  }
-}
+};
 
 /*
 Removed "exact" from <Route/> to shop, since it caused trouble
